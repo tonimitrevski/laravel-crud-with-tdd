@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use Illuminate\Support\Facades\Input;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -83,6 +84,55 @@ class CreatePostTest extends TestCase
 
         $this->json('DELETE', "posts/$post->id")
             ->assertStatus(403);
+    }
+
+    /** @test */
+    function authorized_users_can_edit_own_post()
+    {
+        $this->signIn();
+
+        $post = create('App\Post', ['user_id' => auth()->id()]);
+
+        $this->get("posts/$post->id/edit")
+            ->assertSee($post->title)
+            ->assertSee($post->body);
+
+        $response = $this->post("posts/$post->id/update", [
+            'title' => 'new title',
+            'body' => 'new body'
+        ]);
+
+        $this->get($response->headers->get('Location'))
+            ->assertSee('new title')
+            ->assertSee('new body');
+    }
+
+    /** @test */
+    function authorized_users_canot_edit_other_post_get()
+    {
+        $this->signIn();
+
+        $otherUser = create(User::class);
+
+        $post = create('App\Post', ['user_id' => $otherUser->id]);
+
+        $this->get("posts/$post->id/edit")
+            ->assertStatus(403);
+    }
+
+    /** @test */
+    function authorized_users_canot_edit_other_post_post()
+    {
+        $this->signIn();
+
+        $otherUser = create(User::class);
+
+        $post = create('App\Post', ['user_id' => $otherUser->id]);
+
+        $this->post("posts/$post->id/update", [
+            'title' => 'new title',
+            'body' => 'new body'
+        ])->assertStatus(403);
     }
 
     /**
