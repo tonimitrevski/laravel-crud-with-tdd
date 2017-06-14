@@ -54,9 +54,10 @@ class CreatePostTest extends TestCase
     }
 
    /**
-     * @param array $overrides
-     * @return \Illuminate\Foundation\Testing\TestResponse
-     */
+    * Publish Post
+    * @param array $overrides
+    * @return \Illuminate\Foundation\Testing\TestResponse
+    */
     protected function publishPost($overrides = [])
     {
         $this->signIn();

@@ -72,6 +72,7 @@ class EditPostTest extends TestCase
     }
 
     /**
+     * Edit Post
      * @param null $id
      * @return mixed
      */
@@ -83,6 +84,7 @@ class EditPostTest extends TestCase
 
 
     /**
+     * Make new post
      * @param $id
      * @param array $array
      * @return \Illuminate\Foundation\Testing\TestResponse

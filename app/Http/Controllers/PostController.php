@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Repositories\PostRepository\Contracts\PostRepositoryInterface;
+use App\Repositories\PostRepository\Eloquent\PostRepository;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    /**
+     * @var PostRepository
+     */
+    protected $postRepository;
 
     /**
      * PostController constructor.
+     * @param PostRepositoryInterface $postRepository
      */
-    public function __construct()
+    public function __construct(PostRepositoryInterface $postRepository)
     {
+        $this->postRepository = $postRepository;
         $this->middleware('auth');
     }
 
@@ -23,7 +31,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = $this->postRepository->all();
 
         return view('posts.index', compact('posts'));
     }
@@ -51,12 +59,11 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
-        Post::create([
+        $this->postRepository->create([
             'user_id' => auth()->id(),
             'title' => request('title'),
             'body' => request('body')
         ]);
-
 
         return redirect()->route('posts');
     }
@@ -101,7 +108,7 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
-        $post->update($request->all());
+        $this->postRepository->update($request->all(), $post->id);
 
         return redirect()->route('posts');
     }
@@ -116,7 +123,8 @@ class PostController extends Controller
     {
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $this->postRepository->delete($post->id);
+
 
         return redirect()->route('posts');
     }
