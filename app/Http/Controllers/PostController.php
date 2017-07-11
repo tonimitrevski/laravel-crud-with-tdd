@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Repositories\PostRepository\Contracts\PostRepositoryCacheInterface;
 use App\Repositories\PostRepository\Contracts\PostRepositoryInterface;
+use App\Repositories\PostRepository\Eloquent\PostCacheRepository;
 use App\Repositories\PostRepository\Eloquent\PostRepository;
 use Illuminate\Http\Request;
 
@@ -15,12 +17,21 @@ class PostController extends Controller
     protected $postRepository;
 
     /**
+     * @var PostCacheRepository
+     */
+    protected $postRepositoryCache;
+
+    /**
      * PostController constructor.
      * @param PostRepositoryInterface $postRepository
+     * @param PostRepositoryCacheInterface $postRepositoryCache
      */
-    public function __construct(PostRepositoryInterface $postRepository)
-    {
+    public function __construct(
+        PostRepositoryInterface $postRepository,
+        PostRepositoryCacheInterface $postRepositoryCache
+    ) {
         $this->postRepository = $postRepository;
+        $this->postRepositoryCache = $postRepositoryCache;
         $this->middleware('auth');
     }
 
@@ -31,7 +42,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = $this->postRepository->all();
+/*        $posts = $this->postRepository->all();*/
+
+        $posts = $this->postRepositoryCache->all();
 
         return view('posts.index', compact('posts'));
     }
@@ -59,7 +72,7 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
-        $this->postRepository->create([
+        $this->postRepositoryCache->create([
             'user_id' => auth()->id(),
             'title' => request('title'),
             'body' => request('body')

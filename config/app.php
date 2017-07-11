@@ -180,7 +180,8 @@ return [
         /*
          * Custom Providers
          */
-        \App\Providers\PostRepositoryProvider::class
+        \App\Providers\PostRepositoryProvider::class,
+        \App\Providers\PostRepositoryCacheProvider::class
 
     ],
 

@@ -47,7 +47,7 @@ abstract class EloquentCrudRepository implements CrudRepositoryInterface, Criter
      * @param Model $model
      * @param Collection $collection
      */
-    public function __construct($model, Collection $collection)
+    public function __construct(Model $model, Collection $collection)
     {
         $this->model = $model;
         $this->oldModel = $model;

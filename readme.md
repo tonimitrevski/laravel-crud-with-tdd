@@ -1,4 +1,4 @@
-## Simple Laravel CRUD TDD Application with Repository Pattern
+## Simple Laravel CRUD TDD Application with Repository Pattern Decorator
 
 1. All tests are on the test folder
 
@@ -20,3 +20,4 @@
         </ul>
     </li>
 </ul>
+3. Add Cache Repository Patern Decorator
